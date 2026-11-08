@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#070b12">
+  <meta name="description" content="Compare exact Branch and Bound routing with the fast Nearest Neighbor heuristic for e-commerce delivery planning.">
+  <title>RouteLab | Optimal Delivery Route Planning</title>
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Leaflet CSS for Interactive Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+        crossorigin="" />
+</head>
+<body>
+
+  <a class="skip-link" href="#main-content">Skip to route planner</a>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="#hero" class="nav-brand">
+        <div class="nav-brand-logo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+        </div>
+        <div class="nav-brand-text">
+          <h1>OPTIMAL ROUTE PLANNING</h1>
+          <span>E-Commerce DAA Project</span>
+        </div>
+      </a>
+      
+      <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="primaryNavigation" aria-label="Open navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="nav-links" id="primaryNavigation">
+        <li><a href="#hero">Overview</a></li>
+        <li><a href="#algorithms">Algorithms</a></li>
+        <li><a href="#planner">Route Planner</a></li>
+        <li><a href="#matrix-section">Cost Matrix</a></li>
+        <li><a href="#results-section">Results & Map</a></li>
+        <li><a href="#history-section">History</a></li>
+        <li><a href="#team-section">Team</a></li>
+      </ul>
+
+      <div class="status-badge" id="backendStatus">
+        <span class="status-dot"></span>
+        <span>C Backend Online</span>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main-content">
+  <!-- Hero / Landing Section -->
+  <section class="hero-section" id="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-badge">DESIGN AND ANALYSIS OF ALGORITHMS • B.TECH CSE</div>
+          <h1 class="hero-title">OPTIMAL DELIVERY ROUTE PLANNING FOR E-COMMERCE APPLICATIONS</h1>
+          <h2 class="hero-subtitle">A Comparative Study of the Travelling Salesperson Problem Using Branch and Bound and Nearest Neighbor Algorithms</h2>
+          <p class="hero-description">
+            Solving the asymmetric delivery routing challenge by evaluating the exact Branch and Bound algorithm 
+            with matrix-reduction lower bounding against the fast greedy Nearest Neighbor heuristic. 
+            Integrated with OpenStreetMap Nominatim for geocoding, OSRM for real road distances, and SQLite for persistent audit records.
+          </p>
+          <div class="hero-actions">
+            <a href="#planner" class="btn btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+              Start Route Planning
+            </a>
+            <a href="#algorithms" class="btn btn-secondary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              Algorithm Analysis
+            </a>
+          </div>
+        </div>
+
+        <!-- Network Visual Canvas Card -->
+        <div class="network-visual-card">
+          <div class="network-canvas-header">
+            <h3>DELIVERY NETWORK TOPOLOGY</h3>
+            <span class="badge" style="font-size:0.75rem; color:var(--accent-blue); font-family:monospace;">Hamiltonian Cycle</span>
+          </div>
+          <canvas id="networkCanvas" class="network-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- Highlights Grid (Slides 2 & 4) -->
+      <div class="highlights-grid">
+        <div class="highlight-card">
+          <div class="highlight-num">01</div>
+          <h4>COST EFFICIENCY</h4>
+          <p>Optimize practical delivery routes to drastically reduce vehicle travel costs, fuel consumption, and transit time.</p>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-num">02</div>
+          <h4>MINIMUM TOUR</h4>
+          <p>Visits every delivery destination exactly once and returns to the initial warehouse without self-intersections.</p>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-num">03</div>
+          <h4>EXACT METHOD</h4>
+          <p>Branch and Bound (LCBB) systematically prunes suboptimal search spaces using cost matrix reduction bounds.</p>
+        </div>
+        <div class="highlight-card">
+          <div class="highlight-num">04</div>
+          <h4>FAST HEURISTIC</h4>
+          <p>Nearest Neighbor greedily evaluates local minima in O(N²) time for instant delivery schedule generation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Algorithms Deep Dive Section -->
+  <section class="section" id="algorithms">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">ALGORITHMS IMPLEMENTATION</h2>
+        <div class="section-accent-line"></div>
+        <p class="section-subtitle">
+          Comparing exact combinatorial optimization against greedy approximations for the Travelling Salesperson Problem.
+        </p>
+      </div>
+
+      <div class="algorithms-grid">
+        <!-- Branch and Bound Card -->
+        <div class="algo-card bb">
+          <div class="algo-card-badge">Exact Algorithm</div>
+          <h3>Branch and Bound (LCBB)</h3>
+          <p>
+            Explores the state space tree using Least-Cost Branch and Bound. At each node, computes a rigorous lower bound via row and column cost matrix reduction. Prunes unpromising subtrees whenever the lower bound meets or exceeds the best-known tour cost.
+          </p>
+          <div class="algo-specs">
+            <div class="algo-spec-item">
+              <span>Optimality</span>
+              <strong>Guaranteed Exact Optimum</strong>
+            </div>
+            <div class="algo-spec-item">
+              <span>Worst-Case Time</span>
+              <strong>O(N! · N²)</strong>
+            </div>
+            <div class="algo-spec-item">
+              <span>Average Time</span>
+              <strong>O(N² · 2ⁿ) with reduction</strong>
+            </div>
+            <div class="algo-spec-item">
+              <span>Data Structure</span>
+              <strong>Min-Heap Priority Queue</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nearest Neighbor Card -->
+        <div class="algo-card nn">
+          <div class="algo-card-badge">Heuristic Algorithm</div>
+          <h3>Nearest Neighbor</h3>
+          <p>
+            A greedy polynomial-time heuristic. Starting at the designated warehouse, it iteratively visits the nearest reachable unvisited destination until all destinations are satisfied, and finally closes the circuit by returning to the origin.
+          </p>
+          <div class="algo-specs">
+            <div class="algo-spec-item">
+              <span>Optimality</span>
+              <strong>Suboptimal / Heuristic</strong>
+            </div>
+            <div class="algo-spec-item">
+              <span>Time Complexity</span>
+              <strong>O(N²)</strong>
+            </div>
+            <div class="algo-spec-item">
+              <span>Space Complexity</span>
+              <strong>O(N) Visited Array</strong>
+            </div>
+            <div class="algo-spec-item">
+              <span>Trade-off</span>
+              <strong>Instant speed vs Suboptimality</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparative Table from Slide 12 -->
+      <div class="comparison-table-wrapper">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Criterion</th>
+              <th>Branch and Bound (LCBB)</th>
+              <th>Nearest Neighbor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Approach</td>
+              <td>Exact state-space search with matrix reduction pruning</td>
+              <td>Greedy local selection heuristic</td>
+            </tr>
+            <tr>
+              <td>Optimality Guarantee</td>
+              <td><span style="color:var(--accent-blue); font-weight:700;">Guaranteed Global Optimum</span></td>
+              <td><span style="color:var(--accent-orange); font-weight:700;">Approximate / Local Minimum</span></td>
+            </tr>
+            <tr>
+              <td>Computational Complexity</td>
+              <td>Exponential worst-case O(N! · N²)</td>
+              <td>Polynomial O(N²)</td>
+            </tr>
+            <tr>
+              <td>Memory Model</td>
+              <td>Dynamic Min-Heap Priority Queue (M · N²)</td>
+              <td>Linear O(N) visited boolean array</td>
+            </tr>
+            <tr>
+              <td>Primary Use Case</td>
+              <td>Exact logistics optimization & benchmarking</td>
+              <td>Real-time dispatch & dynamic routing</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Delivery Route Planner Section -->
+  <section class="section" id="planner">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">DELIVERY ROUTE PLANNER</h2>
+        <div class="section-accent-line"></div>
+        <p class="section-subtitle">
+          Specify your starting fulfillment warehouse and delivery customer destinations. 
+          The C engine resolves coordinates via Nominatim and builds real road-distance matrices via OSRM.
+        </p>
+      </div>
+
+      <div class="planner-grid">
+        <!-- Input Form Card -->
+        <div class="form-card">
+          <div class="form-card-header">
+            <h3>DELIVERY NETWORK CONFIGURATION</h3>
+            <div class="quick-samples">
+              <button type="button" class="btn btn-secondary btn-sm" id="btnLoadAPSample">
+                Load AP Example
+              </button>
+              <select class="form-control" id="selectBenchmarkSample" style="width: auto; padding: 0.35rem 0.8rem; font-size: 0.78rem;">
+                <option value="">Benchmark Samples...</option>
+                <option value="1">Sample 1: Urban 4-loc</option>
+                <option value="2">Sample 2: Regional 5-loc</option>
+                <option value="3">Sample 3: Metro 6-loc</option>
+                <option value="4">Sample 4: Disconnected (Test)</option>
+              </select>
+            </div>
+          </div>
+
+          <form id="routePlannerForm" onsubmit="return false;">
+            <!-- Starting Location -->
+            <div class="form-group">
+              <label class="form-label" for="startingWarehouse">
+                <span>1. Starting Warehouse / Source Location</span>
+                <span class="badge" id="sourceCoordsBadge">Origin (Depot)</span>
+              </label>
+              <div class="input-with-icon">
+                <span class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                </span>
+                <input type="text" class="form-control" id="startingWarehouse" 
+                       placeholder="e.g. SRM University AP" 
+                       value="SRM University AP" required>
+              </div>
+            </div>
+
+            <!-- Destinations Container -->
+            <div class="form-group">
+              <div class="form-label">
+                <span>2. Delivery Destinations (Max 20 Total)</span>
+                <span id="destCountBadge" class="badge">4 Destinations</span>
+              </div>
+              
+              <div id="destinationsContainer">
+                <!-- Dynamically populated rows -->
+              </div>
+
+              <button type="button" class="btn btn-secondary btn-sm" id="btnAddDestination" style="margin-top: 0.6rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add Destination
+              </button>
+
+              <!-- Quick Suggestion Chips for Popular AP Landmarks -->
+              <div class="quick-suggest-chips" id="quickSuggestChips">
+                <span style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">Popular Stops:</span>
+                <button type="button" class="chip-btn" data-place="PVP Mall">+ PVP Mall</button>
+                <button type="button" class="chip-btn" data-place="Vijayawada Railway Station">+ Rly Station</button>
+                <button type="button" class="chip-btn" data-place="Trendset Mall">+ Trendset Mall</button>
+                <button type="button" class="chip-btn" data-place="Benz Circle">+ Benz Circle</button>
+                <button type="button" class="chip-btn" data-place="Vijayawada Airport">+ Airport</button>
+                <button type="button" class="chip-btn" data-place="Kanaka Durga Temple">+ Durga Temple</button>
+                <button type="button" class="chip-btn" data-place="AIIMS Mangalagiri">+ AIIMS</button>
+                <button type="button" class="chip-btn" data-place="Guntur Bus Station">+ Guntur</button>
+              </div>
+            </div>
+
+            <!-- E-Commerce Cost & Vehicle Parameters -->
+            <div class="cost-params-box">
+              <div class="cost-params-header">
+                <h4>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><path d="M12 18V6"></path></svg>
+                  E-COMMERCE OPERATIONAL COST MODEL (REAL ₹ RATES)
+                </h4>
+                <span class="badge" style="background:rgba(16, 185, 129, 0.15); color:#10B981; font-size:0.72rem;">Live ₹ Engine</span>
+              </div>
+              <div class="cost-params-grid">
+                <div class="cost-param-group">
+                  <label for="vehicleTypeSelect">Delivery Fleet Vehicle</label>
+                  <select id="vehicleTypeSelect">
+                    <option value="8.5">🛵 Courier Motorcycle (₹ 8.50/km)</option>
+                    <option value="12.0" selected>🚐 Delivery Cargo Van (₹ 12.00/km)</option>
+                    <option value="5.0">🚴 E-Cargo Scooter (₹ 5.00/km)</option>
+                    <option value="custom">⚙️ Custom Rate...</option>
+                  </select>
+                </div>
+                <div class="cost-param-group">
+                  <label for="costPerKmInput">Fuel & Ops Rate (₹ / km)</label>
+                  <input type="number" id="costPerKmInput" value="12.0" step="0.5" min="1.0">
+                </div>
+                <div class="cost-param-group">
+                  <label for="handlingPerStopInput">Handling Payout / Stop (₹)</label>
+                  <input type="number" id="handlingPerStopInput" value="30.0" step="5" min="0">
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="form-actions-bar">
+              <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+                <button type="button" class="btn btn-primary" id="btnFindDistances">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  Find Distances (OSRM)
+                </button>
+                <button type="button" class="btn btn-accent" id="btnCalculateOptimal">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                  Calculate Optimal Route
+                </button>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" id="btnToggleManualMatrix">
+                Manual Travel Costs
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Instructions & Features Panel -->
+        <div class="planner-info-card">
+          <h3 style="font-size: 1.15rem; margin-bottom: 1.5rem;">REAL-WORLD GEODATA & EXECUTION</h3>
+
+          <div class="info-feature-item">
+            <div class="info-icon-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+            </div>
+            <div class="info-text">
+              <h4>OpenStreetMap Nominatim Geocoding</h4>
+              <p>Converts real address names into exact latitude/longitude coordinates with SQLite persistent caching.</p>
+            </div>
+          </div>
+
+          <div class="info-feature-item">
+            <div class="info-icon-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg>
+            </div>
+            <div class="info-text">
+              <h4>OSRM True Road-Distance Matrix</h4>
+              <p>Computes actual driving distances in kilometers, accurately modeling asymmetric costs (one-ways, ramps, traffic flow).</p>
+            </div>
+          </div>
+
+          <div class="info-feature-item">
+            <div class="info-icon-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+            </div>
+            <div class="info-text">
+              <h4>SQLite Persistent Storage</h4>
+              <p>Saves delivery plans, computed matrices, and algorithm execution performance directly to delivery.db.</p>
+            </div>
+          </div>
+
+          <div class="info-feature-item">
+            <div class="info-icon-box">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            </div>
+            <div class="info-text">
+              <h4>Mathematical Route Verification</h4>
+              <p>Every computed tour is verified to start and end at the warehouse and visit every node exactly once.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Distance Matrix View (Section 3.C) -->
+      <div class="matrix-card" id="matrix-section">
+        <div class="matrix-header">
+          <div>
+            <h3>CALCULATED ROAD DISTANCE & DELIVERY COST MATRIX</h3>
+            <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">
+              Directed pairwise costs: C[i][j] shows travel road distance (km) and actual delivery fuel/transit expenditure (₹).
+            </p>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+            <div class="speed-toggle-group" id="matrixUnitToggle">
+              <button type="button" class="speed-btn active" data-unit="both">Both (km + ₹)</button>
+              <button type="button" class="speed-btn" data-unit="dist">Distance (km)</button>
+              <button type="button" class="speed-btn" data-unit="cost">Cost (₹)</button>
+            </div>
+            <span id="matrixStatusBadge" class="badge" style="background:rgba(56, 189, 248, 0.15); color:var(--accent-blue); padding:0.4rem 0.8rem; border-radius:9999px;">
+              Awaiting Calculation
+            </span>
+          </div>
+        </div>
+        <div class="matrix-table-container">
+          <table class="matrix-table" id="matrixTable">
+            <thead>
+              <tr><th>From \ To</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Click 'Find Distances' to generate matrix.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results & Comparison Dashboard (Section 3.E) -->
+  <section class="section results-section" id="results-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">OPTIMIZATION RESULTS & REAL-WORLD DELIVERY COSTS</h2>
+        <div class="section-accent-line"></div>
+        <p class="section-subtitle">
+          Side-by-side evaluation of Branch and Bound exact global optimum versus Nearest Neighbor heuristic with real fuel & operational costs.
+        </p>
+      </div>
+
+      <!-- Algorithm Method Selector & Explainer -->
+      <div class="method-selector-box">
+        <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+          <span style="font-size:0.78rem; text-transform:uppercase; color:var(--text-muted); font-weight:700;">Active Method View:</span>
+          <div class="method-pills">
+            <button type="button" class="method-pill active" id="pillBothMethods" data-mode="both">
+              ⚡ Comparative View (B&B vs NN)
+            </button>
+            <button type="button" class="method-pill" id="pillBBMethod" data-mode="bb">
+              ★ Branch & Bound Only (Exact LCBB)
+            </button>
+            <button type="button" class="method-pill" id="pillNNMethod" data-mode="nn">
+              🚀 Nearest Neighbor Only (Greedy)
+            </button>
+          </div>
+        </div>
+        <span class="badge" id="activeMethodBadge" style="background:rgba(56, 189, 248, 0.15); color:var(--accent-blue);">
+          DAA Comparative Evaluation Active
+        </span>
+      </div>
+
+      <!-- Live Dynamic Method Explainer Banner -->
+      <div class="method-explainer-banner" id="methodExplainerBanner">
+        <div class="explainer-title-row">
+          <div class="explainer-title" id="explainerTitle">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <span id="explainerTitleText">Method: Branch and Bound (LCBB with Matrix Reduction Lower Bounds)</span>
+          </div>
+          <span class="badge" id="explainerCreditBadge" style="background:rgba(56, 189, 248, 0.2); color:var(--accent-blue); font-family:monospace;">
+            Mathews (AP25110070852) & Shubham (AP25110070745)
+          </span>
+        </div>
+        <p id="explainerDescText" style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:0.6rem;">
+          Explores the state space tree using Least-Cost Branch and Bound (LCBB). At each candidate node, computes a rigorous lower bound by reducing the row and column costs. Any branch with Lower Bound &ge; current best tour is strictly pruned, mathematically guaranteeing the global minimum delivery cost.
+        </p>
+        <div class="explainer-steps" id="explainerStepsGrid">
+          <div class="explainer-step-card">
+            <strong>1. Matrix Reduction Bound</strong>
+            <p id="step1Text">Subtracts row minima and col minima to obtain initial lower bound LB₀.</p>
+          </div>
+          <div class="explainer-step-card">
+            <strong>2. Priority Queue Search</strong>
+            <p id="step2Text">Always expands the lowest lower-bound node from the Min-Heap priority queue.</p>
+          </div>
+          <div class="explainer-step-card">
+            <strong>3. Subtree Pruning</strong>
+            <p id="step3Text">Discards suboptimal routes immediately when their lower bound exceeds best known cost.</p>
+          </div>
+          <div class="explainer-step-card">
+            <strong>4. Mathematical Optimality</strong>
+            <p id="step4Text">Guaranteed lowest total fuel and vehicle expense for the entire delivery cycle.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Algorithm Cards -->
+      <div class="results-grid" id="resultsCardsGrid">
+        <!-- Branch & Bound Result -->
+        <div class="result-card bb" id="cardBB">
+          <div class="result-card-header">
+            <h3>BRANCH AND BOUND (EXACT)</h3>
+            <span class="badge" style="background:rgba(56, 189, 248, 0.2); color:var(--accent-blue); padding:0.3rem 0.7rem; border-radius:9999px; font-weight:700; font-size:0.75rem;">
+              GLOBAL OPTIMUM
+            </span>
+          </div>
+          
+          <!-- Financial Cost Hero Display -->
+          <div class="cost-hero-box">
+            <div>
+              <div class="cost-hero-label">Total Delivery Operational Cost</div>
+              <div class="cost-hero-left">
+                <span class="rupee-symbol">₹</span>
+                <span class="cost-hero-number" id="bbFinancialCost">0.00</span>
+              </div>
+            </div>
+            <div class="cost-breakdown-pills">
+              <span>Fuel/Transit: <strong id="bbFuelCost">₹ 0.00</strong></span>
+              <span>Handling: <strong id="bbHandlingCost">₹ 0.00</strong></span>
+              <span>Cost/Stop: <strong id="bbCostPerStop">₹ 0.00</strong></span>
+            </div>
+          </div>
+
+          <div class="result-distance-display">
+            <span class="result-distance-number" id="bbTotalCost">0.00</span>
+            <span class="result-distance-unit">km road distance &bull; <span id="bbEstTime" style="color:var(--text-primary); font-size:0.85rem; font-weight:700;">~0h 0m</span></span>
+          </div>
+
+          <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.4rem; font-weight:600;">
+            Optimal Delivery Tour Sequence:
+          </div>
+          <div class="route-sequence-box" id="bbRouteSequence">
+            Awaiting execution...
+          </div>
+
+          <div class="result-stats-row">
+            <div class="result-stat-item">
+              <span>Execution Time</span>
+              <strong id="bbTimeMs">0.00 ms</strong>
+            </div>
+            <div class="result-stat-item">
+              <span>State Space Nodes</span>
+              <strong id="bbNodesExplored">0 nodes</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nearest Neighbor Result -->
+        <div class="result-card nn" id="cardNN">
+          <div class="result-card-header">
+            <h3>NEAREST NEIGHBOR (HEURISTIC)</h3>
+            <span class="badge" style="background:rgba(245, 158, 11, 0.2); color:var(--accent-orange); padding:0.3rem 0.7rem; border-radius:9999px; font-weight:700; font-size:0.75rem;">
+              GREEDY APPROXIMATION
+            </span>
+          </div>
+
+          <!-- Financial Cost Hero Display -->
+          <div class="cost-hero-box nn">
+            <div>
+              <div class="cost-hero-label">Total Delivery Operational Cost</div>
+              <div class="cost-hero-left">
+                <span class="rupee-symbol">₹</span>
+                <span class="cost-hero-number" id="nnFinancialCost">0.00</span>
+              </div>
+            </div>
+            <div class="cost-breakdown-pills">
+              <span>Fuel/Transit: <strong id="nnFuelCost">₹ 0.00</strong></span>
+              <span>Handling: <strong id="nnHandlingCost">₹ 0.00</strong></span>
+              <span>Cost/Stop: <strong id="nnCostPerStop">₹ 0.00</strong></span>
+            </div>
+          </div>
+
+          <div class="result-distance-display">
+            <span class="result-distance-number" id="nnTotalCost">0.00</span>
+            <span class="result-distance-unit">km road distance &bull; <span id="nnEstTime" style="color:var(--text-primary); font-size:0.85rem; font-weight:700;">~0h 0m</span></span>
+          </div>
+
+          <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.4rem; font-weight:600;">
+            Greedy Delivery Tour Sequence:
+          </div>
+          <div class="route-sequence-box" id="nnRouteSequence">
+            Awaiting execution...
+          </div>
+
+          <div class="result-stats-row">
+            <div class="result-stat-item">
+              <span>Execution Time</span>
+              <strong id="nnTimeMs">0.00 ms</strong>
+            </div>
+            <div class="result-stat-item">
+              <span>Decision Steps</span>
+              <strong id="nnNodesExplored">0 steps</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Algorithmic Comparison Summary -->
+      <div class="comparison-summary-card" id="comparisonSummaryCard">
+        <h3 style="font-size: 1.1rem; margin-bottom: 1.4rem;">DIRECT PERFORMANCE & FINANCIAL SAVINGS COMPARISON</h3>
+        <div class="comparison-stats-grid">
+          <div class="comp-stat-box">
+            <span>Exact Cost (B&B)</span>
+            <strong id="compBBCost" style="color:#10B981;">₹ 0.00</strong>
+            <span id="compBBDist" style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">0.00 km</span>
+          </div>
+          <div class="comp-stat-box">
+            <span>Greedy Cost (NN)</span>
+            <strong id="compNNCost" style="color:#FBBF24;">₹ 0.00</strong>
+            <span id="compNNDist" style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">0.00 km</span>
+          </div>
+          <div class="comp-stat-box">
+            <span>Financial Money Saved</span>
+            <strong id="compMoneySaved" style="color:#10B981;">₹ 0.00</strong>
+            <span id="compDiffKm" style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">0.00 km saved</span>
+          </div>
+          <div class="comp-stat-box">
+            <span>DAA Optimality Gap</span>
+            <strong id="compPctDiff" style="color:var(--accent-orange);">0.00%</strong>
+            <span id="compGapLabel" style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Extra Cost by NN</span>
+          </div>
+        </div>
+
+        <div class="comp-verdict-banner" id="compVerdictBanner">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          <span id="compVerdictText">Calculate a delivery route to view algorithm comparison.</span>
+        </div>
+      </div>
+
+      <!-- Delivery Route Map (Section 3.F) -->
+      <div class="map-card">
+        <div class="map-header">
+          <div>
+            <h3>INTERACTIVE ROAD ROUTE MAP</h3>
+            <p style="color:var(--text-secondary); font-size:0.85rem; margin-top:0.25rem;">
+              Displays real OSRM road geometries, courier delivery bike simulation, warehouse hub, and delivery locations on OpenStreetMap tiles.
+            </p>
+          </div>
+          <div class="map-layer-toggles">
+            <button type="button" class="layer-btn active both" id="btnToggleBoth">Show Both</button>
+            <button type="button" class="layer-btn bb" id="btnToggleBB">Branch & Bound</button>
+            <button type="button" class="layer-btn nn" id="btnToggleNN">Nearest Neighbor</button>
+            <button type="button" class="layer-btn" id="btnToggleMapTheme" title="Toggle Dark / Normal Tiles">🌙 Dark Map</button>
+          </div>
+        </div>
+
+        <!-- Delivery Ride Simulation Control Bar -->
+        <div class="sim-control-bar" id="simControlBar">
+          <div class="sim-controls-left">
+            <button type="button" class="btn btn-accent btn-sm" id="btnSimulateRide" style="display:flex; align-items:center; gap:0.4rem;">
+              <svg id="simPlayIcon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span id="simBtnLabel">Play Delivery Run</span>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" id="btnResetRide" style="display:flex; align-items:center; gap:0.4rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+              <span>Reset Bike</span>
+            </button>
+            <div class="speed-toggle-group">
+              <button type="button" class="speed-btn active" data-speed="1">1x</button>
+              <button type="button" class="speed-btn" data-speed="2">2x</button>
+              <button type="button" class="speed-btn" data-speed="4">4x</button>
+            </div>
+          </div>
+          <div class="sim-status-display" id="simStatusDisplay">
+            <span class="pulse-dot"></span>
+            <span id="simStatusText">Ready for delivery run. Click 'Play Delivery Run' to animate courier bike.</span>
+          </div>
+        </div>
+        
+        <div id="routeMap"></div>
+
+        <!-- Step-by-Step Delivery Itinerary Grid -->
+        <div class="itinerary-card" id="itinerarySection">
+          <div class="itinerary-header">
+            <h4>DELIVERY ROUTE ITINERARY (STEP-BY-STEP LEGS)</h4>
+            <span class="badge" id="itineraryTotalBadge" style="background:rgba(56,189,248,0.2); color:var(--accent-blue);">0.00 km Total Tour</span>
+          </div>
+          <div class="itinerary-grid" id="itineraryGrid">
+            <!-- Dynamically populated leg cards -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Saved Delivery Records / Database History (Section 3.G) -->
+  <section class="section" id="history-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">SAVED DELIVERY RECORDS (SQLITE)</h2>
+        <div class="section-accent-line"></div>
+        <p class="section-subtitle">
+          Audit history stored persistently in SQLite database (<code style="color:var(--accent-blue);">database/delivery.db</code>).
+        </p>
+      </div>
+
+      <div class="history-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
+          <h3>PREVIOUS DELIVERY PLANS</h3>
+          <button type="button" class="btn btn-secondary btn-sm" id="btnRefreshHistory">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            Refresh
+          </button>
+        </div>
+
+        <div class="history-table-wrapper">
+          <table class="history-table" id="historyTable">
+            <thead>
+              <tr>
+                <th>Plan ID</th>
+                <th>Starting Warehouse</th>
+                <th>Locations</th>
+                <th>B&B Distance (Exact)</th>
+                <th>NN Distance (Heuristic)</th>
+                <th>Timestamp</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No records found in SQLite database.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Project Team Section (Slide 1 from PPT) -->
+  <section class="section" id="team-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">PROJECT TEAM & CONTRIBUTIONS</h2>
+        <div class="section-accent-line"></div>
+        <p class="section-subtitle">
+          Department of Computer Science and Engineering • SRM University, Andhra Pradesh
+        </p>
+      </div>
+
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-card-avatar">S</div>
+          <h4>Sugandh</h4>
+          <div class="role">Introduction & Survey</div>
+          <div class="reg-no">AP25110070346</div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-card-avatar">S</div>
+          <h4>Shubham</h4>
+          <div class="role">Nearest Neighbor Algo</div>
+          <div class="reg-no">AP25110070745</div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-card-avatar">R</div>
+          <h4>Rohit</h4>
+          <div class="role">Execution & Testing</div>
+          <div class="reg-no">AP25110070453</div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-card-avatar">M</div>
+          <h4>Mathews</h4>
+          <div class="role">Branch & Bound Algo</div>
+          <div class="reg-no">AP25110070852</div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-card-avatar">B</div>
+          <h4>Bhuvan</h4>
+          <div class="role">Application & Routes</div>
+          <div class="reg-no">AP25110070082</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div>
+        <strong>OPTIMAL DELIVERY ROUTE PLANNING FOR E-COMMERCE APPLICATIONS</strong><br>
+        <span>Design and Analysis of Algorithms Course Project • Pure C Backend &amp; SQLite</span>
+      </div>
+      <div style="font-family:monospace; font-size:0.8rem; color:var(--text-muted);">
+        Branch and Bound (LCBB) vs Nearest Neighbor
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+          crossorigin=""></script>
+
+  <!-- Application Logic JS -->
+  <script src="js/app.js"></script>
+</body>
+</html>

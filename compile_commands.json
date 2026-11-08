@@ -1,0 +1,28 @@
+[
+  {
+    "directory": "C:/Users/Rohit/OneDrive/New onedrive/OneDrive/Desktop/E-Commerce route planning",
+    "command": "C:/MinGW/bin/gcc.exe -std=c99 -Wall -Wextra -O2 -ICommon -isystem C:/MinGW/include -isystem C:/MinGW/lib/gcc/mingw32/6.3.0/include -c Common/route.c -o bin/route.o",
+    "file": "Common/route.c"
+  },
+  {
+    "directory": "C:/Users/Rohit/OneDrive/New onedrive/OneDrive/Desktop/E-Commerce route planning",
+    "command": "C:/MinGW/bin/gcc.exe -std=c99 -Wall -Wextra -O2 -ICommon -isystem C:/MinGW/include -isystem C:/MinGW/lib/gcc/mingw32/6.3.0/include -c Common/branch_bound.c -o bin/branch_bound.o",
+    "file": "Common/branch_bound.c"
+  },
+  {
+    "directory": "C:/Users/Rohit/OneDrive/New onedrive/OneDrive/Desktop/E-Commerce route planning",
+    "command": "C:/MinGW/bin/gcc.exe -std=c99 -Wall -Wextra -O2 -ICommon -isystem C:/MinGW/include -isystem C:/MinGW/lib/gcc/mingw32/6.3.0/include -c Common/nearest_neighbor.c -o bin/nearest_neighbor.o",
+    "file": "Common/nearest_neighbor.c"
+  },
+  {
+    "directory": "C:/Users/Rohit/OneDrive/New onedrive/OneDrive/Desktop/E-Commerce route planning",
+    "command": "C:/MinGW/bin/gcc.exe -std=c99 -Wall -Wextra -O2 -ICommon -isystem C:/MinGW/include -isystem C:/MinGW/lib/gcc/mingw32/6.3.0/include -c Console/main.c -o bin/main.o",
+    "file": "Console/main.c"
+  },
+  {
+    "directory": "C:/Users/Rohit/OneDrive/New onedrive/OneDrive/Desktop/E-Commerce route planning",
+    "command": "C:/MinGW/bin/gcc.exe -std=c99 -Wall -Wextra -O2 -ICommon -isystem C:/MinGW/include -isystem C:/MinGW/lib/gcc/mingw32/6.3.0/include -c tests/verify_all.c -o bin/verify_all.o",
+    "file": "tests/verify_all.c"
+  }
+]
+

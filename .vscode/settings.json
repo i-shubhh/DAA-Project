@@ -1,0 +1,16 @@
+{
+    "C_Cpp.default.compilerPath": "C:/MinGW/bin/gcc.exe",
+    "C_Cpp.default.cStandard": "c99",
+    "C_Cpp.default.intelliSenseMode": "windows-gcc-x86",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
+    "C_Cpp.errorSquiggles": "disabled",
+    "clangd.arguments": [
+        "--query-driver=C:/MinGW/bin/gcc.exe",
+        "--compile-commands-dir=${workspaceFolder}",
+        "--background-index"
+    ],
+    "files.associations": {
+        "*.h": "c",
+        "*.c": "c"
+    }
+}

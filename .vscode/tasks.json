@@ -1,0 +1,49 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build All Components (build.bat)",
+            "type": "shell",
+            "command": ".\\build.bat",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Build Web Server",
+            "type": "shell",
+            "command": "gcc -std=c99 -Wall -Wextra -O2 -ICommon -Ibackend -DSQLITE_THREADSAFE=1 backend/server.c backend/database.c backend/geocoding.c backend/routing.c backend/http_client.c backend/cJSON.c backend/sqlite3.o Common/route.c Common/nearest_neighbor.c Common/branch_bound.c -o bin/delivery_server.exe -lws2_32",
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Run Web Server (port 8080)",
+            "type": "shell",
+            "command": ".\\run_server.bat",
+            "group": "test"
+        },
+        {
+            "label": "Build Console Application",
+            "type": "shell",
+            "command": "gcc -std=c99 -Wall -Wextra -O2 -ICommon Common/route.c Common/nearest_neighbor.c Common/branch_bound.c Console/main.c -o bin/delivery_planner_console.exe",
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Run Console Application",
+            "type": "shell",
+            "command": ".\\bin\\delivery_planner_console.exe",
+            "dependsOn": "Build Console Application",
+            "group": "test"
+        },
+        {
+            "label": "Run Automated Verification Suite",
+            "type": "shell",
+            "command": "gcc -std=c99 -Wall -Wextra -O2 -ICommon Common/route.c Common/nearest_neighbor.c Common/branch_bound.c tests/verify_all.c -o bin/verify_all.exe && .\\bin\\verify_all.exe",
+            "group": "test",
+            "problemMatcher": ["$gcc"]
+        }
+    ]
+}

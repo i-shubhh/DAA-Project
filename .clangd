@@ -1,0 +1,19 @@
+CompileFlags:
+  Add:
+    - "-std=c99"
+    - "-ICommon"
+    - "-IConsole"
+    - "-isystem"
+    - "C:/MinGW/include"
+    - "-isystem"
+    - "C:/MinGW/lib/gcc/mingw32/6.3.0/include"
+    - "-isystem"
+    - "C:/MinGW/lib/gcc/mingw32/6.3.0/include-fixed"
+    - "-isystem"
+    - "C:/MinGW/mingw32/include"
+  Compiler: C:/MinGW/bin/gcc.exe
+Diagnostics:
+  Suppress:
+    - "pp_file_not_found"
+    - "drv_unknown_argument"
+
