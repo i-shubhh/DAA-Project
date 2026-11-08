@@ -608,7 +608,7 @@ static void *client_worker(void *arg) {
         send_json_response(client_sock, 200, "{\"status\":\"ok\",\"backend\":\"C99 Portable HTTP Server\"}");
     } else {
         /* Static file serving */
-        char file_path[512];
+        char file_path[1024];
         if (strcmp(clean_uri, "/") == 0 || strcmp(clean_uri, "/index.html") == 0) {
             snprintf(file_path, sizeof(file_path), "frontend/index.html");
         } else {
@@ -630,6 +630,11 @@ static void *client_worker(void *arg) {
 
 int main(int argc, char *argv[]) {
     int port = DEFAULT_PORT;
+    const char *env_port = getenv("PORT");
+    if (env_port) {
+        int p = atoi(env_port);
+        if (p > 0 && p <= 65535) port = p;
+    }
     if (argc > 1) {
         port = atoi(argv[1]);
         if (port <= 0 || port > 65535) port = DEFAULT_PORT;
