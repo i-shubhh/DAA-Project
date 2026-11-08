@@ -4,6 +4,7 @@
 #include <string.h>
 #include <strings.h>
 #include <ctype.h>
+#include <stdint.h>
 #include <time.h>
 #ifdef _WIN32
 #include <winsock2.h>
@@ -675,7 +676,7 @@ int main(int argc, char *argv[]) {
     memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    server_addr.sin_port = htons((u_short)port);
+    server_addr.sin_port = htons((uint16_t)port);
 
     if (bind(listen_sock, (struct sockaddr*)&server_addr, sizeof(server_addr)) == SOCKET_ERROR) {
 #ifdef _WIN32
