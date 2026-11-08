@@ -1,0 +1,12 @@
+{
+  "name": "e-commerce-route-planning",
+  "version": "1.0.0",
+  "private": true,
+  "description": "C-based e-commerce delivery route planning application",
+  "scripts": {
+    "dev": "make -B run",
+    "build": "make -B server",
+    "test": "make test",
+    "start": "./bin/delivery_server"
+  }
+}

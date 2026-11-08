@@ -150,24 +150,30 @@ Optimal_Delivery_Route_Planning/
 ## 5. Quick Start & Execution
 
 ### Prerequisites
-- Windows 7/10/11 with MinGW / GCC (`gcc.exe` in PATH).
-- Native Windows `curl.exe` (included by default in Windows 10/11) or `libcurl`.
+- **Windows:** Windows 7/10/11 with MinGW / GCC (`gcc.exe` in PATH) and native `curl.exe` or `libcurl`.
+- **macOS:** Xcode Command Line Tools (`xcode-select --install`), `make`, and `curl`.
+- **Linux:** GCC or Clang, `make`, and `curl`.
 
 ---
 
 ### Option 1: Full-Stack Web Application (Recommended)
 
-1. **One-Click Build & Launch:**
-   Double-click `run_server.bat` or run in terminal:
+1. **Windows:** Double-click `run_server.bat` or run in a terminal:
    ```cmd
    run_server.bat
    ```
    *This will compile all components (if not already compiled), start the C HTTP backend server on `http://localhost:8080`, and open your default browser automatically.*
 
-2. **Manual Compilation with GCC:**
-   ```cmd
-   build.bat
-   bin\delivery_server.exe
+2. **macOS / Linux:** Run the portable launcher:
+   ```bash
+   ./run_server.sh
+   ```
+   Pass another port when needed, for example `./run_server.sh 8081`.
+
+3. **Manual Compilation:**
+   ```bash
+   make server
+   make run
    ```
    Then open `http://localhost:8080` in your web browser.
 

@@ -28,8 +28,6 @@ SERVER_SRCS = $(BACKEND_DIR)/server.c \
               $(BACKEND_DIR)/cJSON.c \
               $(COMMON_SRCS)
 
-SQLITE_OBJ = $(BACKEND_DIR)/sqlite3.o
-
 # Console and Test Sources
 CONSOLE_SRCS = $(CONSOLE_DIR)/main.c $(COMMON_SRCS)
 TEST_SRCS = $(TEST_DIR)/verify_all.c $(COMMON_SRCS)
@@ -39,18 +37,20 @@ ifeq ($(OS),Windows_NT)
     SERVER_BIN = $(BIN_DIR)/delivery_server.exe
     CONSOLE_BIN = $(BIN_DIR)/delivery_planner_console.exe
     TEST_BIN = $(BIN_DIR)/verify_all.exe
+    SQLITE_OBJ = $(BIN_DIR)/sqlite3.o
     LIBS = -lws2_32
     MKDIR_P = if not exist $(BIN_DIR) mkdir $(BIN_DIR)
     MKDIR_DB = if not exist $(DB_DIR) mkdir $(DB_DIR)
-    RM = del /Q /F
+    CLEAN_CMD = del /Q /F $(BIN_DIR)\*.exe $(BIN_DIR)\*.o 2>nul || exit 0
 else
     SERVER_BIN = $(BIN_DIR)/delivery_server
     CONSOLE_BIN = $(BIN_DIR)/delivery_planner_console
     TEST_BIN = $(BIN_DIR)/verify_all
+    SQLITE_OBJ = $(BIN_DIR)/sqlite3.o
     LIBS = -lpthread -ldl -lm
     MKDIR_P = mkdir -p $(BIN_DIR)
     MKDIR_DB = mkdir -p $(DB_DIR)
-    RM = rm -rf
+    CLEAN_CMD = rm -f $(BIN_DIR)/* $(BACKEND_DIR)/*.o
 endif
 
 .PHONY: all server console test clean help run
@@ -89,7 +89,7 @@ run: server
 	@$(SERVER_BIN)
 
 clean:
-	@$(RM) $(BIN_DIR)\*.exe $(BIN_DIR)/* *.o 2>nul || true
+	@$(CLEAN_CMD)
 	@echo [CLEAN] Removed binaries and objects.
 
 help:
