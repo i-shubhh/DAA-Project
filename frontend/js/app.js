@@ -377,19 +377,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const geoRes = await fetch('/api/geocode', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ address: name })
+          body: JSON.stringify({ addresses: [name] })
         });
 
         const geoData = await geoRes.json();
-        if (!geoData.success) {
+        const location = geoData.locations && geoData.locations[0];
+        if (!geoData.success || !location) {
           throw new Error(`Address '${name}' could not be located. Try selecting from 'Popular Stops' or check spelling.`);
         }
 
         resolvedLocations.push({
           name: name,
-          display_name: geoData.display_name,
-          lat: geoData.lat,
-          lon: geoData.lon
+          display_name: location.display_name,
+          lat: location.lat,
+          lon: location.lon
         });
       }
 

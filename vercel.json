@@ -1,11 +1,4 @@
 {
   "version": 2,
-  "buildCommand": "make -B server",
-  "outputDirectory": "frontend",
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    }
-  ]
+  "outputDirectory": "frontend"
 }
